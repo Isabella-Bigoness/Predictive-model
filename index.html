@@ -83,7 +83,6 @@
             const atBats = parseInt(document.getElementById('atBats').value);
             const homeRuns = parseInt(document.getElementById('homeRuns').value);
 
-            // Simple predictive model: Batting Average = (Hits + (Home Runs * 0.5)) / At-Bats
             if (atBats === 0) {
                 document.getElementById('prediction').innerText = "At-bats cannot be zero. Please provide a valid input.";
             } else {
