@@ -79,15 +79,21 @@
 
     <script>
         function predictPerformance() {
-            const hits = parseInt(document.getElementById('hits').value);
-            const atBats = parseInt(document.getElementById('atBats').value);
-            const homeRuns = parseInt(document.getElementById('homeRuns').value);
+            const hits = Number(document.getElementById('hits').value);
+            const atBats = Number(document.getElementById('atBats').value);
+            const homeRuns = Number(document.getElementById('homeRuns').value);
+            const result = document.getElementById('prediction');
 
-            if (atBats === 0) {
-                document.getElementById('prediction').innerText = "At-bats cannot be zero. Please provide a valid input.";
+            if (
+                Number.isNaN(hits) || Number.isNaN(atBats) || Number.isNaN(homeRuns) ||
+                hits < 0 || atBats < 0 || homeRuns < 0
+            ) {
+                result.innerText = 'Please enter valid non-negative numbers.';
+            } else if (atBats === 0) {
+                result.innerText = 'At-bats cannot be zero. Please provide a valid input.';
             } else {
                 const battingAverage = ((hits + (homeRuns * 0.5)) / atBats).toFixed(3);
-                document.getElementById('prediction').innerText = `Predicted Batting Average: ${battingAverage}`;
+                result.innerText = `Predicted Batting Average: ${battingAverage}`;
             }
             document.getElementById('result').style.display = 'block';
         }
