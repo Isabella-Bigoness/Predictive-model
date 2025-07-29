@@ -3,90 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predictive Model Demo</title>
-    <!-- Bootstrap CSS for styling -->
+    <title>Baseball Performance Predictor</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #004680;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            margin-top: 30px;
-        }
-        .predict-section {
-            background: #b9c9d3;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        footer {
-            margin-top: 30px;
-            text-align: center;
-            padding: 20px;
-            background-color: #004680;
-            color: white;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f8f9fa; margin:0; padding:0; }
+        header { background-color: #004680; color:white; padding:20px; text-align:center; }
+        .container { margin-top:30px; }
+        .predict-section { background:#b9c9d3; padding:20px; border-radius:8px; }
+        footer { margin-top:30px; text-align:center; padding:20px; background-color:#004680; color:white; }
     </style>
 </head>
 <body>
     <header>
-        <h1>General Predictive Model</h1>
-        <p>Data-driven predictions using a weighted average approach</p>
+        <h1>Baseball Performance Predictor</h1>
+        <p>Predict batting average and slugging percentage</p>
     </header>
     <div class="container">
         <section class="predict-section">
-            <h2>Make a Prediction</h2>
+            <h2>Player Statistics</h2>
             <p>
-                Enter three numeric features below to compute a weighted score.
-                The model multiplies each feature by its assigned weight
-                (40 %, 35 %, and 25 %) and then sums them to calculate the
-                final score.  Weighted averages ensure that more important
-                factors have a greater effect on the result:contentReference[oaicite:5]{index=5}.
+                Enter the player's hitting stats.  Slugging percentage rewards extra‑base hits,
+                while batting average treats all hits the same:contentReference[oaicite:2]{index=2}.
             </p>
-            <form onsubmit="event.preventDefault(); predictScore();">
+            <form onsubmit="event.preventDefault(); predictPerformance();">
                 <div class="form-group">
-                    <label for="feature1">Feature 1 (Weight 40 %)</label>
-                    <input type="number" id="feature1" class="form-control" required>
+                    <label for="singles">Singles (1B)</label>
+                    <input type="number" id="singles" class="form-control" min="0" required>
                 </div>
                 <div class="form-group">
-                    <label for="feature2">Feature 2 (Weight 35 %)</label>
-                    <input type="number" id="feature2" class="form-control" required>
+                    <label for="doubles">Doubles (2B)</label>
+                    <input type="number" id="doubles" class="form-control" min="0" required>
                 </div>
                 <div class="form-group">
-                    <label for="feature3">Feature 3 (Weight 25 %)</label>
-                    <input type="number" id="feature3" class="form-control" required>
+                    <label for="triples">Triples (3B)</label>
+                    <input type="number" id="triples" class="form-control" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="homeRuns">Home Runs (HR)</label>
+                    <input type="number" id="homeRuns" class="form-control" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="atBats">At‑Bats (AB)</label>
+                    <input type="number" id="atBats" class="form-control" min="1" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Predict</button>
             </form>
-            <div id="result" style="display:none; margin-top: 20px;">
+            <div id="result" style="display:none; margin-top:20px;">
                 <h3>Prediction Result:</h3>
-                <p id="prediction"></p>
+                <p id="avg"></p>
+                <p id="slg"></p>
+                <p id="powerRank"></p>
             </div>
         </section>
     </div>
     <footer>
-        © 2025 Isabella Bigoness – Predictive Analytics
+        © 2025 Isabella Bigoness – Baseball Analytics
     </footer>
     <script>
-        function predictScore() {
-            const f1 = parseFloat(document.getElementById('feature1').value);
-            const f2 = parseFloat(document.getElementById('feature2').value);
-            const f3 = parseFloat(document.getElementById('feature3').value);
-            // Validate input
-            if (isNaN(f1) || isNaN(f2) || isNaN(f3)) {
-                document.getElementById('prediction').innerText = 'Please enter valid numbers for all features.';
+        function predictPerformance() {
+            const singles = parseInt(document.getElementById('singles').value);
+            const doubles = parseInt(document.getElementById('doubles').value);
+            const triples = parseInt(document.getElementById('triples').value);
+            const homeRuns = parseInt(document.getElementById('homeRuns').value);
+            const atBats = parseInt(document.getElementById('atBats').value);
+            if (atBats <= 0) {
+                document.getElementById('avg').innerText = 'At‑bats must be greater than zero.';
+                document.getElementById('slg').innerText = '';
+                document.getElementById('powerRank').innerText = '';
             } else {
-                // Weights sum to 1 (0.40 + 0.35 + 0.25)
-                const weightedScore = (0.40 * f1 + 0.35 * f2 + 0.25 * f3).toFixed(2);
-                document.getElementById('prediction').innerText = `Predicted Score: ${weightedScore}`;
+                const hits = singles + doubles + triples + homeRuns;
+                const avg = (hits / atBats).toFixed(3);
+                const totalBases = singles + 2 * doubles + 3 * triples + 4 * homeRuns;
+                const slugging = (totalBases / atBats).toFixed(3);
+                let power;
+                const s = parseFloat(slugging);
+                if (s >= 0.55) {
+                    power = 'Elite Power Hitter';
+                } else if (s >= 0.50) {
+                    power = 'Very Good Power Hitter';
+                } else if (s >= 0.45) {
+                    power = 'Good Hitter';
+                } else if (s >= 0.40) {
+                    power = 'Average Hitter';
+                } else {
+                    power = 'Below Average Hitter';
+                }
+                document.getElementById('avg').innerText = `Batting Average (AVG): ${avg}`;
+                document.getElementById('slg').innerText = `Slugging Percentage (SLG): ${slugging}`;
+                document.getElementById('powerRank').innerText = `Power Rating: ${power}`;
             }
             document.getElementById('result').style.display = 'block';
         }
