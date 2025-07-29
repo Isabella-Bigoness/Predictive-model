@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baseball Player Performance Predictor</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <title>Predictive Model Demo</title>
+    <!-- Bootstrap CSS for styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,57 +38,56 @@
 </head>
 <body>
     <header>
-        <h1>Player Performance Predictor</h1>
-        <p>By Isabella Bigoness</p>
+        <h1>General Predictive Model</h1>
+        <p>Data-driven predictions using a weighted average approach</p>
     </header>
-
     <div class="container">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <div class="predict-section">
-                    <h2>Predict Baseball Player Performance</h2>
-                    <p>Use this tool to predict a player's batting average based on input features like hits, at-bats, and home runs.</p>
-
-                    <form id="predict-form">
-                        <div class="mb-3">
-                            <label for="hits" class="form-label">Hits</label>
-                            <input type="number" class="form-control" id="hits" placeholder="Enter number of hits" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="atBats" class="form-label">At-Bats</label>
-                            <input type="number" class="form-control" id="atBats" placeholder="Enter number of at-bats" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="homeRuns" class="form-label">Home Runs</label>
-                            <input type="number" class="form-control" id="homeRuns" placeholder="Enter number of home runs" required>
-                        </div>
-                        <button type="button" class="btn btn-primary" onclick="predictPerformance()">Predict</button>
-                    </form>
-
-                    <div id="result" class="mt-3" style="display:none;">
-                        <h4>Prediction Result:</h4>
-                        <p id="prediction"></p>
-                    </div>
+        <section class="predict-section">
+            <h2>Make a Prediction</h2>
+            <p>
+                Enter three numeric features below to compute a weighted score.
+                The model multiplies each feature by its assigned weight
+                (40 %, 35 %, and 25 %) and then sums them to calculate the
+                final score.  Weighted averages ensure that more important
+                factors have a greater effect on the result:contentReference[oaicite:5]{index=5}.
+            </p>
+            <form onsubmit="event.preventDefault(); predictScore();">
+                <div class="form-group">
+                    <label for="feature1">Feature 1 (Weight 40 %)</label>
+                    <input type="number" id="feature1" class="form-control" required>
                 </div>
+                <div class="form-group">
+                    <label for="feature2">Feature 2 (Weight 35 %)</label>
+                    <input type="number" id="feature2" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="feature3">Feature 3 (Weight 25 %)</label>
+                    <input type="number" id="feature3" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Predict</button>
+            </form>
+            <div id="result" style="display:none; margin-top: 20px;">
+                <h3>Prediction Result:</h3>
+                <p id="prediction"></p>
             </div>
-        </div>
+        </section>
     </div>
-
     <footer>
-        <p>&copy; 2024 Isabella Bigoness's Baseball Analytics</p>
+        © 2025 Isabella Bigoness – Predictive Analytics
     </footer>
-
     <script>
-        function predictPerformance() {
-            const hits = parseInt(document.getElementById('hits').value);
-            const atBats = parseInt(document.getElementById('atBats').value);
-            const homeRuns = parseInt(document.getElementById('homeRuns').value);
-
-            if (atBats === 0) {
-                document.getElementById('prediction').innerText = "At-bats cannot be zero. Please provide a valid input.";
+        // Calculate a weighted score based on three input features
+        function predictScore() {
+            const f1 = parseFloat(document.getElementById('feature1').value);
+            const f2 = parseFloat(document.getElementById('feature2').value);
+            const f3 = parseFloat(document.getElementById('feature3').value);
+            // Validate input
+            if (isNaN(f1) || isNaN(f2) || isNaN(f3)) {
+                document.getElementById('prediction').innerText = 'Please enter valid numbers for all features.';
             } else {
-                const battingAverage = ((hits + (homeRuns * 0.5)) / atBats).toFixed(3);
-                document.getElementById('prediction').innerText = `Predicted Batting Average: ${battingAverage}`;
+                // Weights sum to 1 (0.40 + 0.35 + 0.25)
+                const weightedScore = (0.40 * f1 + 0.35 * f2 + 0.25 * f3).toFixed(2);
+                document.getElementById('prediction').innerText = `Predicted Score: ${weightedScore}`;
             }
             document.getElementById('result').style.display = 'block';
         }
